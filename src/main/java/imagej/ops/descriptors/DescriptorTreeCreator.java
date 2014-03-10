@@ -53,7 +53,8 @@ import org.scijava.plugin.PluginInfo;
 public class DescriptorTreeCreator {
 
 	// Op service is nice
-	private final OpService opService;
+	@Parameter
+	private OpService opService; //TODO: rename to "ops"; will be easier to read
 
 	// ALL operations (including hidden + output)
 	private final List<Op> allOps = new ArrayList<Op>();
@@ -70,9 +71,8 @@ public class DescriptorTreeCreator {
 	/**
 	 * Constructor
 	 */
-	public DescriptorTreeCreator() {
-		final Context context = new Context(OpService.class);
-		opService = context.getService(OpService.class);
+	public DescriptorTreeCreator(final Context context) {
+		context.inject(this);
 	}
 
 	/**
