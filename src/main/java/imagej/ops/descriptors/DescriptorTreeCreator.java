@@ -35,6 +35,7 @@
 package imagej.ops.descriptors;
 
 import imagej.ops.Op;
+import imagej.ops.OpMatcherService;
 import imagej.ops.OpService;
 
 import java.lang.reflect.AccessibleObject;
@@ -55,6 +56,9 @@ public class DescriptorTreeCreator {
 	// Op service is nice
 	@Parameter
 	private OpService opService; //TODO: rename to "ops"; will be easier to read
+
+	@Parameter
+	private OpMatcherService opMatcherService;
 
 	// ALL operations (including hidden + output)
 	private final List<Op> allOps = new ArrayList<Op>();
