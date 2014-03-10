@@ -34,6 +34,8 @@
 
 package imagej.ops.descriptors;
 
+import imagej.command.CommandModuleItem;
+import imagej.module.ModuleItem;
 import imagej.ops.Op;
 import imagej.ops.OpMatcherService;
 import imagej.ops.OpService;
@@ -150,10 +152,9 @@ public class DescriptorTreeCreator {
 	 */
 	private void parse(final Op _parent) {
 		// visit all fields of parent op
-		for (final Field annotatedField : _parent.getClass().getDeclaredFields()) {
-			// is there a @Parameter annotation?
-			if (annotatedField.isAnnotationPresent(Parameter.class)) {
-				final Class<?> annotatedType = annotatedField.getType();
+		for (final ModuleItem<?> input : opService.info(_parent).inputs()) {
+			final Field annotatedField = ((CommandModuleItem<?>) input).getField();//TEMP
+			final Class<?> annotatedType = input.getType();
 
 				// Parameter is another op
 				if (Op.class.isAssignableFrom(annotatedType)) {
@@ -172,8 +173,8 @@ public class DescriptorTreeCreator {
 					for (final Op op : allOps) {
 						// TODO Curtis: Ops Service? Checks a op has an output which is
 						// compatible to annotatedType
-						if (op.hasCompatibleOutput(annotatedType)) {
-							if ((requiredOp != null && requiredOp.getPriority() < op
+						if (opMatcherService.hasCompatibleOutput(opService.info(op), input)) {
+							if ((requiredOp != null && opService.info(requiredOp).getPriority() < opService.info(op)
 								.getPriority()) ||
 								requiredOp == null)
 							{
@@ -199,7 +200,6 @@ public class DescriptorTreeCreator {
 						}
 					}
 				}
-			}
 		}
 	}
 
