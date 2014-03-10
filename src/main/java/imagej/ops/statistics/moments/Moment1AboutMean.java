@@ -1,9 +1,9 @@
 /*
  * #%L
- * ImageJ OPS: a framework for reusable algorithms.
+ * SciJava OPS: a framework for reusable algorithms.
  * %%
- * Copyright (C) 2014 Board of Regents of the University of
- * Wisconsin-Madison and University of Konstanz.
+ * Copyright (C) 2013 - 2014 Board of Regents of the University of
+ * Wisconsin-Madison, and University of Konstanz.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,52 +28,54 @@
  * #L%
  */
 
-package imagej.ops.convert;
+package imagej.ops.statistics.moments;
 
+import imagej.ops.AbstractFunction;
 import imagej.ops.Op;
-import imagej.ops.OpService;
-import imagej.ops.normalize.NormalizeRealType;
+import imagej.ops.misc.Size;
+import imagej.ops.statistics.Mean;
 
-import java.util.List;
+import java.util.Iterator;
 
-import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.integer.LongType;
+import net.imglib2.type.numeric.real.DoubleType;
 
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = Op.class, name = "convert")
-public class ConvertPixNormalizeScale<I extends RealType<I>, O extends RealType<O>>
-	extends ConvertPixScale<I, O>
+@Plugin(type = Op.class, name = "moment1aboutmean")
+public class Moment1AboutMean<T extends RealType<T>> extends
+	AbstractFunction<Iterable<T>, DoubleType>
 {
 
 	@Parameter
-	private OpService ops;
+	private Iterable<T> ii;
+
+	@Parameter
+	private Mean<T, DoubleType> mean;
+
+	@Parameter
+	private Size<Iterable<T>> size;
+
+//	@Override
+//	public String name() {
+//		return "Moment 1 About Mean";
+//	}
 
 	@Override
-	public void checkInOutTypes(final I inType, final O outType) {
-		outMin = outType.getMinValue();
+	public DoubleType compute(final Iterable<T> input, final DoubleType output) {
+		final double mean = this.mean.compute(input, new DoubleType()).get();
+		final double area = this.size.compute(input, new LongType()).get();
+		double res = 0.0;
+
+		final Iterator<T> it = ii.iterator();
+		while (it.hasNext()) {
+			final double val = it.next().getRealDouble() - mean;
+			res += val;
+		}
+
+		output.set(res / area);
+		return output;
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void checkInputSource(IterableInterval<I> in) {
-		List<I> minmax = (List<I>) ops.run("minmax", in);
-		I inType = in.firstElement().createVariable();
-		factor =
-			NormalizeRealType.normalizationFactor(minmax.get(0).getRealDouble(),
-				minmax.get(1).getRealDouble(), inType.getMinValue(), inType
-					.getMaxValue());
-
-		inMin = minmax.get(0).getRealDouble();
-
-	}
-
-	@Override
-	public boolean conforms() {
-		// only conforms if an input source has been provided and the scale factor
-		// was calculated
-		return factor != 0;
-	}
-
 }

@@ -28,17 +28,27 @@
  * #L%
  */
 
-package imagej.ops.misc;
+package imagej.ops.statistics;
 
-import imagej.ops.Function;
+import imagej.ops.AbstractFunction;
+import imagej.ops.Op;
+import net.imglib2.type.numeric.RealType;
 
-/**
- * Simple marker interface
- * 
- * @author Christian Dietz
- * @param <T>
- * @param <V>
- */
-public interface Sum<T, V> extends Function<Iterable<T>, V> {
-	// NB: Marker for Maximum Operations
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+@Plugin(type = Op.class, name = Sum.NAME, priority = Priority.LOW_PRIORITY)
+public class SumRealType<T extends RealType<T>> extends
+	AbstractFunction<Iterable<T>, T> implements Sum<T, T>
+{
+
+	@Override
+	public T compute(final Iterable<T> input, final T output) {
+
+		for (final T t : input) {
+			output.add(t);
+		}
+
+		return output;
+	}
 }

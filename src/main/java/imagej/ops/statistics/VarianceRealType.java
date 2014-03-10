@@ -28,52 +28,33 @@
  * #L%
  */
 
-package imagej.ops.convert;
+package imagej.ops.statistics;
 
+import imagej.ops.AbstractFunction;
 import imagej.ops.Op;
-import imagej.ops.OpService;
-import imagej.ops.normalize.NormalizeRealType;
-
-import java.util.List;
-
-import net.imglib2.IterableInterval;
+import imagej.ops.statistics.moments.Moment2AboutMean;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.real.DoubleType;
 
+import org.scijava.Priority;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = Op.class, name = "convert")
-public class ConvertPixNormalizeScale<I extends RealType<I>, O extends RealType<O>>
-	extends ConvertPixScale<I, O>
+@Plugin(type = Op.class, name = Variance.NAME, priority = Priority.LOW_PRIORITY)
+public class VarianceRealType<T extends RealType<T>> extends
+	AbstractFunction<Iterable<T>, DoubleType> implements Variance<T, DoubleType>
 {
 
 	@Parameter
-	private OpService ops;
+	private Moment2AboutMean<T> moment2;
 
 	@Override
-	public void checkInOutTypes(final I inType, final O outType) {
-		outMin = outType.getMinValue();
+	public DoubleType compute(final Iterable<T> input, final DoubleType output) {
+		return moment2.compute(input, output);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void checkInputSource(IterableInterval<I> in) {
-		List<I> minmax = (List<I>) ops.run("minmax", in);
-		I inType = in.firstElement().createVariable();
-		factor =
-			NormalizeRealType.normalizationFactor(minmax.get(0).getRealDouble(),
-				minmax.get(1).getRealDouble(), inType.getMinValue(), inType
-					.getMaxValue());
-
-		inMin = minmax.get(0).getRealDouble();
-
-	}
-
-	@Override
-	public boolean conforms() {
-		// only conforms if an input source has been provided and the scale factor
-		// was calculated
-		return factor != 0;
-	}
-
+//	@Override
+//	public String name() {
+//		return "Variance";
+//	}
 }

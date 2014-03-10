@@ -28,47 +28,33 @@
  * #L%
  */
 
-package imagej.ops.misc;
+package imagej.ops;
 
-import imagej.ops.Op;
+import imagej.command.CommandInfo;
+import imagej.module.Module;
+import imagej.service.ImageJService;
 
-import java.util.Iterator;
+import java.util.List;
 
-import net.imglib2.type.numeric.RealType;
-
-import org.scijava.ItemIO;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.plugin.SingletonService;
 
 /**
- * Calculates the minimum and maximum value of an image.
+ * Interface for services that find {@link Op}s which match a template.
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = Op.class, name = "minmax")
-public class MinMax<T extends RealType<T>> implements Op {
+public interface OpMatcherService extends SingletonService<OperationMatcher>,
+	ImageJService
+{
 
-	@Parameter
-	private Iterable<T> img;
+	/** Builds a list of candidate ops which match the given name and class. */
+	List<CommandInfo> findCandidates(String name, Class<? extends Op> type);
 
-	@Parameter(type = ItemIO.OUTPUT)
-	private T min;
-
-	@Parameter(type = ItemIO.OUTPUT)
-	private T max;
-
-	@Override
-	public void run() {
-		min = img.iterator().next().createVariable();
-		max = min.copy();
-
-		min.setReal(min.getMaxValue());
-		max.setReal(max.getMinValue());
-
-		final Iterator<T> it = img.iterator();
-		while (it.hasNext()) {
-			final T i = it.next();
-			if (min.compareTo(i) > 0) min.set(i);
-			if (max.compareTo(i) < 0) max.set(i);
-		}
-	}
+	/**
+	 * Filters a list of ops to those matching the given arguments.
+	 * 
+	 * @return The list of matching ops as {@link Module} instances.
+	 */
+	List<Module> findMatches(List<? extends CommandInfo> ops, Object... args);
 
 }

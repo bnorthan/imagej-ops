@@ -28,52 +28,47 @@
  * #L%
  */
 
-package imagej.ops.convert;
+package imagej.ops.misc;
 
 import imagej.ops.Op;
-import imagej.ops.OpService;
-import imagej.ops.normalize.NormalizeRealType;
 
-import java.util.List;
+import java.util.Iterator;
 
-import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.RealType;
 
+import org.scijava.ItemIO;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = Op.class, name = "convert")
-public class ConvertPixNormalizeScale<I extends RealType<I>, O extends RealType<O>>
-	extends ConvertPixScale<I, O>
-{
+/**
+ * Calculates the minimum and maximum value of an image.
+ */
+@Plugin(type = Op.class, name = "minmax")
+public class MinMaxRealType<T extends RealType<T>> implements Op {
 
 	@Parameter
-	private OpService ops;
+	private Iterable<T> img;
+
+	@Parameter(type = ItemIO.OUTPUT)
+	private T min;
+
+	@Parameter(type = ItemIO.OUTPUT)
+	private T max;
 
 	@Override
-	public void checkInOutTypes(final I inType, final O outType) {
-		outMin = outType.getMinValue();
-	}
+	public void run() {
+		min = img.iterator().next().createVariable();
+		max = min.copy();
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void checkInputSource(IterableInterval<I> in) {
-		List<I> minmax = (List<I>) ops.run("minmax", in);
-		I inType = in.firstElement().createVariable();
-		factor =
-			NormalizeRealType.normalizationFactor(minmax.get(0).getRealDouble(),
-				minmax.get(1).getRealDouble(), inType.getMinValue(), inType
-					.getMaxValue());
+		min.setReal(min.getMaxValue());
+		max.setReal(max.getMinValue());
 
-		inMin = minmax.get(0).getRealDouble();
-
-	}
-
-	@Override
-	public boolean conforms() {
-		// only conforms if an input source has been provided and the scale factor
-		// was calculated
-		return factor != 0;
+		final Iterator<T> it = img.iterator();
+		while (it.hasNext()) {
+			final T i = it.next();
+			if (min.compareTo(i) > 0) min.set(i);
+			if (max.compareTo(i) < 0) max.set(i);
+		}
 	}
 
 }

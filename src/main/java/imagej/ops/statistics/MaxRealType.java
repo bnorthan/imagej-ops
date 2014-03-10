@@ -28,7 +28,7 @@
  * #L%
  */
 
-package imagej.ops.misc;
+package imagej.ops.statistics;
 
 import imagej.ops.AbstractFunction;
 import imagej.ops.Op;

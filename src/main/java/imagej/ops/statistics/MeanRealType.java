@@ -28,52 +28,38 @@
  * #L%
  */
 
-package imagej.ops.convert;
+package imagej.ops.statistics;
 
+import imagej.ops.AbstractFunction;
 import imagej.ops.Op;
-import imagej.ops.OpService;
-import imagej.ops.normalize.NormalizeRealType;
-
-import java.util.List;
-
-import net.imglib2.IterableInterval;
+import imagej.ops.misc.Size;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.integer.LongType;
 
+import org.scijava.Priority;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = Op.class, name = "convert")
-public class ConvertPixNormalizeScale<I extends RealType<I>, O extends RealType<O>>
-	extends ConvertPixScale<I, O>
+/**
+ * @author Christian Dietz
+ * @param <T>
+ * @param <V>
+ */
+@Plugin(type = Op.class, name = Mean.NAME, priority = Priority.LOW_PRIORITY)
+public class MeanRealType<T extends RealType<T>, V extends RealType<V>> extends
+	AbstractFunction<Iterable<T>, V>
 {
 
 	@Parameter
-	private OpService ops;
+	private Sum<T, V> sum;
+
+	@Parameter
+	private Size<Iterable<T>> size;
 
 	@Override
-	public void checkInOutTypes(final I inType, final O outType) {
-		outMin = outType.getMinValue();
+	public V compute(final Iterable<T> input, final V output) {
+		output.setReal(sum.compute(input, output).getRealDouble() /
+			size.compute(input, new LongType()).get());
+		return output;
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void checkInputSource(IterableInterval<I> in) {
-		List<I> minmax = (List<I>) ops.run("minmax", in);
-		I inType = in.firstElement().createVariable();
-		factor =
-			NormalizeRealType.normalizationFactor(minmax.get(0).getRealDouble(),
-				minmax.get(1).getRealDouble(), inType.getMinValue(), inType
-					.getMaxValue());
-
-		inMin = minmax.get(0).getRealDouble();
-
-	}
-
-	@Override
-	public boolean conforms() {
-		// only conforms if an input source has been provided and the scale factor
-		// was calculated
-		return factor != 0;
-	}
-
 }

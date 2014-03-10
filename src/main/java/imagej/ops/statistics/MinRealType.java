@@ -28,52 +28,36 @@
  * #L%
  */
 
-package imagej.ops.convert;
+package imagej.ops.statistics;
 
+import imagej.ops.AbstractFunction;
 import imagej.ops.Op;
-import imagej.ops.OpService;
-import imagej.ops.normalize.NormalizeRealType;
 
-import java.util.List;
+import java.util.Iterator;
 
-import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.RealType;
 
-import org.scijava.plugin.Parameter;
+import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = Op.class, name = "convert")
-public class ConvertPixNormalizeScale<I extends RealType<I>, O extends RealType<O>>
-	extends ConvertPixScale<I, O>
+@Plugin(type = Op.class, name = Min.NAME, priority = Priority.LOW_PRIORITY)
+public class MinRealType<T extends RealType<T>> extends
+	AbstractFunction<Iterable<T>, T> implements Min<T, T>
 {
 
-	@Parameter
-	private OpService ops;
-
 	@Override
-	public void checkInOutTypes(final I inType, final O outType) {
-		outMin = outType.getMinValue();
+	public T compute(final Iterable<T> input, final T output) {
+
+		final Iterator<T> it = input.iterator();
+		T max = it.next();
+
+		while (it.hasNext()) {
+			final T next = it.next();
+			if (max.compareTo(next) > 0) {
+				max = next;
+			}
+		}
+		output.set(max);
+		return output;
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void checkInputSource(IterableInterval<I> in) {
-		List<I> minmax = (List<I>) ops.run("minmax", in);
-		I inType = in.firstElement().createVariable();
-		factor =
-			NormalizeRealType.normalizationFactor(minmax.get(0).getRealDouble(),
-				minmax.get(1).getRealDouble(), inType.getMinValue(), inType
-					.getMaxValue());
-
-		inMin = minmax.get(0).getRealDouble();
-
-	}
-
-	@Override
-	public boolean conforms() {
-		// only conforms if an input source has been provided and the scale factor
-		// was calculated
-		return factor != 0;
-	}
-
 }

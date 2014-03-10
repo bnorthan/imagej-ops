@@ -28,52 +28,19 @@
  * #L%
  */
 
-package imagej.ops.convert;
+package imagej.ops.statistics;
 
-import imagej.ops.Op;
-import imagej.ops.OpService;
-import imagej.ops.normalize.NormalizeRealType;
+import imagej.ops.Function;
 
-import java.util.List;
+/**
+ * Simple marker interface
+ * 
+ * @author Christian Dietz
+ * @param <T>
+ * @param <V>
+ */
+public interface StdDeviation<T, V> extends Function<Iterable<T>, V> {
 
-import net.imglib2.IterableInterval;
-import net.imglib2.type.numeric.RealType;
-
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-
-@Plugin(type = Op.class, name = "convert")
-public class ConvertPixNormalizeScale<I extends RealType<I>, O extends RealType<O>>
-	extends ConvertPixScale<I, O>
-{
-
-	@Parameter
-	private OpService ops;
-
-	@Override
-	public void checkInOutTypes(final I inType, final O outType) {
-		outMin = outType.getMinValue();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void checkInputSource(IterableInterval<I> in) {
-		List<I> minmax = (List<I>) ops.run("minmax", in);
-		I inType = in.firstElement().createVariable();
-		factor =
-			NormalizeRealType.normalizationFactor(minmax.get(0).getRealDouble(),
-				minmax.get(1).getRealDouble(), inType.getMinValue(), inType
-					.getMaxValue());
-
-		inMin = minmax.get(0).getRealDouble();
-
-	}
-
-	@Override
-	public boolean conforms() {
-		// only conforms if an input source has been provided and the scale factor
-		// was calculated
-		return factor != 0;
-	}
+	public static final String NAME = "stddev";
 
 }
