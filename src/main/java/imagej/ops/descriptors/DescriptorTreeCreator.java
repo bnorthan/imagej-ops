@@ -111,7 +111,7 @@ public class DescriptorTreeCreator {
 				(PluginInfo<? extends Op>) opService.getPluginService().getPlugin(
 					_descriptorClazz.getName());
 
-			// TODO lazy set parameters? here we just need the OP without parameters
+			// TODO make all descriptor parameters optional.
 			instance = opService.op(_descriptorClazz);
 
 			// we have to have fun with this op now
@@ -119,8 +119,8 @@ public class DescriptorTreeCreator {
 			parse(instance);
 
 			for (final Op op : allOps) {
-				// TODO: Curtis Interface the same and inputs the same (maybe we can add
-				// this to ops serivce?)
+				// TODO: add isEquivalentOp at Descriptor level;
+				// use OpMatcherService.isCandidateOp.
 				if (op.isEquivalentOp(instance)) {
 					updateListeners(instance, op);
 				}
