@@ -97,8 +97,10 @@ public class DescriptorTreeCreator {
 
 		for (final Op op : allOps) {
 			if (_descriptorClazz.isAssignableFrom(op.getClass())) {
-				// TODO should be possible
-				if ((instance != null && op.getPriority() > instance.getPriority()) ||
+				// TODO Consider whether we really need to do this.
+				final double priority = opService.info(op).getPriority();
+
+				if ((instance != null && priority > opService.info(instance).getPriority()) ||
 					instance == null) instance = op;
 			}
 		}
