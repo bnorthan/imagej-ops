@@ -181,7 +181,7 @@ public class DescriptorTreeCreator {
 					// no provider, do we have a compatible op for it?
 					if (requiredOp == null) {
 						@SuppressWarnings("unchecked")
-						//TODO: Is there anywhere an op which can do the job for me?
+						// TODO: Is there anywhere an op which can do the job for me?
 						final Op op = opService.op(Op.class, annotatedType);
 						if (op == null) {
 							throw new IllegalStateException("can not find an appropriate op");
@@ -212,7 +212,8 @@ public class DescriptorTreeCreator {
 	 * @param _old
 	 */
 	private void updateListeners(final Op _new, final Op _old) {
-		// TODO how can we make this happen... well we wrap each and every OP in a CachedOp
+		// TODO how can we make this happen... well we wrap each and every OP in a
+		// CachedOp
 		if (_old.getPriority() < _new.getPriority()) {
 			// register all listerners of op to instance
 			for (final Op successor : _old.getSuccessors()) {
@@ -265,7 +266,7 @@ public class DescriptorTreeCreator {
 		if (!Op.class.isAssignableFrom(_f.getType())) {
 			// here we have a native type
 			final LazyInjector lazyInjector =
-				new LazyInjector((Op<Object>) _injectedOp, _mod, _f);
+				new LazyInjector((Op) _injectedOp, _mod, _f);
 			_injectedOp.registerSuccessor(lazyInjector);
 		}
 		else {
