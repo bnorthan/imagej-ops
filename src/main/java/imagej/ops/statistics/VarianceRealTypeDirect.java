@@ -30,7 +30,7 @@
 
 package imagej.ops.statistics;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 
 import java.util.Iterator;
@@ -43,7 +43,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Variance.NAME, priority = Priority.LOW_PRIORITY)
 public class VarianceRealTypeDirect<T extends RealType<T>> extends
-	AbstractFunction<Iterable<T>, DoubleType> implements Variance<T, DoubleType>
+	AbstractThreadableFunction<Iterable<T>, DoubleType> implements Variance<T, DoubleType>
 {
 
 	@Override

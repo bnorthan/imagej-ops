@@ -31,7 +31,7 @@
 package imagej.ops.map;
 
 import static org.junit.Assert.assertEquals;
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.AbstractInplaceFunction;
 import imagej.ops.AbstractOpTest;
 import imagej.ops.Op;
@@ -138,7 +138,7 @@ class AddOneInplace extends AbstractInplaceFunction<ByteType> {
 	}
 }
 
-class AddOneFunctional extends AbstractFunction<ByteType, ByteType> {
+class AddOneFunctional extends AbstractThreadableFunction<ByteType, ByteType> {
 
 	@Override
 	public ByteType compute(final ByteType input, final ByteType output) {

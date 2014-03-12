@@ -30,7 +30,7 @@
 
 package imagej.ops.statistics;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 
 import java.util.Iterator;
@@ -42,7 +42,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Min.NAME, priority = Priority.LOW_PRIORITY)
 public class MinRealType<T extends RealType<T>> extends
-	AbstractFunction<Iterable<T>, T> implements Min<T, T>
+	AbstractThreadableFunction<Iterable<T>, T> implements Min<T, T>
 {
 
 	@Override

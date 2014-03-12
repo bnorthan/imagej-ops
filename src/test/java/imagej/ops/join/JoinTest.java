@@ -1,7 +1,7 @@
 
 package imagej.ops.join;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.AbstractInplaceFunction;
 import imagej.ops.AbstractOpTest;
 import imagej.ops.Op;
@@ -96,7 +96,7 @@ public class JoinTest extends AbstractOpTest {
 		}
 	}
 
-	class AddOneFunctional extends AbstractFunction<ByteType, ByteType> {
+	class AddOneFunctional extends AbstractThreadableFunction<ByteType, ByteType> {
 
 		@Override
 		public ByteType compute(final ByteType input, final ByteType output) {

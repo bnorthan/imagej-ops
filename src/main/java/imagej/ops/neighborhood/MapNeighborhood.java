@@ -30,7 +30,7 @@
 
 package imagej.ops.neighborhood;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Function;
 import imagej.ops.Op;
 import imagej.ops.OpService;
@@ -52,7 +52,7 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Op.class, name = Map.NAME, priority = Priority.LOW_PRIORITY)
 public class MapNeighborhood<I, O> extends
-	AbstractFunction<RandomAccessibleInterval<I>, RandomAccessibleInterval<O>>
+	AbstractThreadableFunction<RandomAccessibleInterval<I>, RandomAccessibleInterval<O>>
 	implements Map<Iterable<I>, O, Function<Iterable<I>, O>>
 {
 

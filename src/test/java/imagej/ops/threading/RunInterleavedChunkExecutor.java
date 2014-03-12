@@ -1,3 +1,4 @@
+
 package imagej.ops.threading;
 
 import imagej.ops.AbstractFunction;
@@ -13,38 +14,44 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = "doNothing", priority = Priority.LOW_PRIORITY)
-public class RunInterleavedChunkExecutor<A extends RealType<A>> extends AbstractFunction<IterableInterval<A>, IterableInterval<A>> implements Parallel {
+public class RunInterleavedChunkExecutor<A extends RealType<A>> extends
+	AbstractFunction<IterableInterval<A>, IterableInterval<A>> implements
+	Parallel
+{
 
 	@Parameter
 	private OpService opService;
-	
+
 	@Override
 	public IterableInterval<A> compute(final IterableInterval<A> input,
-			final IterableInterval<A> output) {
-		
-			opService.run(InterleavedChunkExecutor.class, new CursorBasedChunkExecutable() {
+		final IterableInterval<A> output)
+	{
 
-			@Override
-			public void	execute(int startIndex, final int stepSize, final int numSteps)
-			{
-				final Cursor<A> cursor = input.localizingCursor();
-				final Cursor<A> cursorOut = output.localizingCursor();
-			
-				setToStart(cursor, startIndex);
-				setToStart(cursorOut, startIndex);
+		opService.run(InterleavedChunkExecutor.class,
+			new CursorBasedChunkExecutable() {
 
-				int ctr = 0;
-				while (ctr < numSteps) {
-					cursorOut.get().set(cursor.get());
-					
-					cursorOut.jumpFwd(stepSize);
-					cursor.jumpFwd(stepSize);
-					ctr++;
+				@Override
+				public void execute(final int startIndex, final int stepSize,
+					final int numSteps)
+				{
+					final Cursor<A> cursor = input.localizingCursor();
+					final Cursor<A> cursorOut = output.localizingCursor();
+
+					setToStart(cursor, startIndex);
+					setToStart(cursorOut, startIndex);
+
+					int ctr = 0;
+					while (ctr < numSteps) {
+						cursorOut.get().set(cursor.get());
+
+						cursorOut.jumpFwd(stepSize);
+						cursor.jumpFwd(stepSize);
+						ctr++;
+					}
 				}
-			}
-		}, input.size());
-	
+			}, input.size());
+
 		return output;
-		
+
 	}
 }

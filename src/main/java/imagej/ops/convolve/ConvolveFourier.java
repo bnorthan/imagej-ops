@@ -63,8 +63,8 @@ public class ConvolveFourier<I extends RealType<I>, K extends RealType<K>, O ext
 	private FFTConvolution<I, K, O> fc = null;
 
 	@Override
-	public RandomAccessibleInterval<O> compute(RandomAccessibleInterval<I> input,
-		RandomAccessibleInterval<O> output)
+	public RandomAccessibleInterval<O> compute(final RandomAccessibleInterval<I> input,
+		final RandomAccessibleInterval<O> output)
 	{
 		if (input.numDimensions() != kernel.numDimensions()) {
 			throw new IllegalArgumentException(

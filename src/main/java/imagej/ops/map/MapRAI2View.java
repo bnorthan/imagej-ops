@@ -41,13 +41,13 @@ import org.scijava.plugin.Plugin;
  * Map values of {@link RandomAccessibleInterval} to a View
  * 
  * @author Christian Dietz
- * 
  * @param <A>
  * @param <B>
  */
 @Plugin(type = Op.class, name = Map.NAME)
-public class MapRAI2View<A, B extends Type<B>> extends
-	MapView<A, B, RandomAccessibleInterval<A>, RandomAccessibleInterval<B>>
+public class MapRAI2View<A, B extends Type<B>>
+	extends
+	AbstractMapView<A, B, RandomAccessibleInterval<A>, RandomAccessibleInterval<B>>
 {
 
 	@Override

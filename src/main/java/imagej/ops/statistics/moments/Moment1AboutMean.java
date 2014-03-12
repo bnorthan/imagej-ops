@@ -30,7 +30,7 @@
 
 package imagej.ops.statistics.moments;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 import imagej.ops.OpService;
 import imagej.ops.misc.Size;
@@ -47,7 +47,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = "moment1aboutmean")
 public class Moment1AboutMean<T extends RealType<T>> extends
-	AbstractFunction<Iterable<T>, DoubleType>
+	AbstractThreadableFunction<Iterable<T>, DoubleType>
 {
 
 	@Parameter(required = false)

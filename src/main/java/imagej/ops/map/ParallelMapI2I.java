@@ -31,6 +31,7 @@
 package imagej.ops.map;
 
 import imagej.ops.Contingent;
+import imagej.ops.Function;
 import imagej.ops.Op;
 import imagej.ops.OpService;
 import imagej.ops.Parallel;
@@ -54,8 +55,8 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Map.NAME, priority = Priority.LOW_PRIORITY + 3)
 public class ParallelMapI2I<A, B> extends
-	AbstractFunctionMap<A, B, IterableInterval<A>, IterableInterval<B>> implements
-	Contingent, Parallel
+	AbstractThreadableFunctionMap<A, B, IterableInterval<A>, IterableInterval<B>>
+	implements Contingent, Parallel
 {
 
 	@Parameter
@@ -90,12 +91,14 @@ public class ParallelMapI2I<A, B> extends
 				final Cursor<A> inCursor = input.cursor();
 				final Cursor<B> outCursor = output.cursor();
 
+				final Function<A, B> localFunc = func.getIndependentInstance();
+
 				setToStart(inCursor, startIndex);
 				setToStart(outCursor, startIndex);
 
 				int ctr = 0;
 				while (ctr < numSteps) {
-					func.compute(inCursor.get(), outCursor.get());
+					localFunc.compute(inCursor.get(), outCursor.get());
 					inCursor.jumpFwd(stepSize);
 					outCursor.jumpFwd(stepSize);
 					ctr++;

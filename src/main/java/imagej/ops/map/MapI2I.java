@@ -30,6 +30,7 @@
 
 package imagej.ops.map;
 
+import imagej.ops.Function;
 import imagej.ops.Op;
 
 import java.util.Iterator;
@@ -49,7 +50,7 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Op.class, name = Map.NAME, priority = Priority.LOW_PRIORITY - 1)
 public class MapI2I<A, B> extends
-	AbstractFunctionMap<A, B, Iterable<A>, Iterable<B>>
+	AbstractFunctionMap<A, B, Iterable<A>, Iterable<B>, Function<A, B>>
 
 {
 

@@ -44,21 +44,21 @@ import org.scijava.plugin.Parameter;
  * @param <C> provides <A>s
  * @param <D> provides <B>s
  */
-public abstract class AbstractFunctionMap<A, B, C, D> extends
-	AbstractFunction<C, D> implements Map<A, B, Function<A, B>>
+public abstract class AbstractFunctionMap<A, B, C, D, F extends Function<A, B>>
+	extends AbstractFunction<C, D> implements Map<A, B, F>
 {
 
 	/** {@link Function} to be used for mapping. */
 	@Parameter
-	protected Function<A, B> func;
+	protected F func;
 
 	@Override
-	public Function<A, B> getFunction() {
+	public F getFunction() {
 		return func;
 	}
 
 	@Override
-	public void setFunction(final Function<A, B> func) {
+	public void setFunction(final F func) {
 		this.func = func;
 	}
 }

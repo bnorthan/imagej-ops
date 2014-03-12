@@ -30,7 +30,7 @@
 
 package imagej.ops.statistics;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Median.NAME, priority = Priority.LOW_PRIORITY)
 public class MedianRealType<T extends RealType<T>> extends
-	AbstractFunction<Iterable<T>, T> implements Median<Iterable<T>, T>
+	AbstractThreadableFunction<Iterable<T>, T> implements Median<Iterable<T>, T>
 {
 
 	@Override

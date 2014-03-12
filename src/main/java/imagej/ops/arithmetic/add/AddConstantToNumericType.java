@@ -30,7 +30,7 @@
 
 package imagej.ops.arithmetic.add;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 import net.imglib2.type.numeric.NumericType;
 
@@ -40,7 +40,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = "add", priority = Priority.LOW_PRIORITY)
 public class AddConstantToNumericType<T extends NumericType<T>> extends
-	AbstractFunction<T, T>
+	AbstractThreadableFunction<T, T>
 {
 
 	@Parameter

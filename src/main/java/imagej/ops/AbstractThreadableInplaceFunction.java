@@ -28,46 +28,15 @@
  * #L%
  */
 
-package imagej.ops.map;
-
-import imagej.ops.Function;
-import imagej.ops.Op;
-import net.imglib2.Cursor;
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
+package imagej.ops;
 
 /**
- * {@link Map} using a {@link Function} on {@link RandomAccessibleInterval} and
- * {@link IterableInterval}
+ * Abstract superclass for {@link InplaceFunction} ops.
  * 
- * @author Martin Horn
- * @author Christian Dietz
- * @param <A> mapped on <B>
- * @param <B> mapped from <A>
+ * @author Curtis Rueden
  */
-@Plugin(type = Op.class, name = Map.NAME, priority = Priority.LOW_PRIORITY)
-public class MapRAI2III<A, B>
-	extends
-	AbstractFunctionMap<A, B, RandomAccessibleInterval<A>, IterableInterval<B>, Function<A, B>>
+public abstract class AbstractThreadableInplaceFunction<A> implements
+	ThreadableInplaceFunction<A>
 {
 
-	@Override
-	public IterableInterval<B> compute(final RandomAccessibleInterval<A> input,
-		final IterableInterval<B> output)
-	{
-		final Cursor<B> cursor = output.localizingCursor();
-		final RandomAccess<A> rndAccess = input.randomAccess();
-
-		while (cursor.hasNext()) {
-			cursor.fwd();
-			rndAccess.setPosition(cursor);
-			func.compute(rndAccess.get(), cursor.get());
-		}
-
-		return output;
-	}
 }

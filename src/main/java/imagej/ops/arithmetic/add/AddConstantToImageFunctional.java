@@ -30,7 +30,7 @@
 
 package imagej.ops.arithmetic.add;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
@@ -44,7 +44,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = "add", priority = Priority.VERY_LOW_PRIORITY)
 public class AddConstantToImageFunctional<T extends NumericType<T>> extends
-	AbstractFunction<IterableInterval<T>, RandomAccessibleInterval<T>>
+	AbstractThreadableFunction<IterableInterval<T>, RandomAccessibleInterval<T>>
 {
 
 	@Parameter

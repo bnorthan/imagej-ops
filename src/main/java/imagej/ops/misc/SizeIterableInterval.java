@@ -30,7 +30,7 @@
 
 package imagej.ops.misc;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.integer.LongType;
@@ -40,7 +40,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Size.NAME, priority = Priority.LOW_PRIORITY)
 public class SizeIterableInterval extends
-	AbstractFunction<IterableInterval<?>, LongType> implements
+	AbstractThreadableFunction<IterableInterval<?>, LongType> implements
 	Size<IterableInterval<?>>
 {
 

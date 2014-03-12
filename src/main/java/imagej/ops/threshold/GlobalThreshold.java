@@ -30,7 +30,7 @@
 
 package imagej.ops.threshold;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 import imagej.ops.OpService;
 import net.imglib2.IterableInterval;
@@ -45,7 +45,7 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Op.class, name = Threshold.NAME)
 public class GlobalThreshold<T extends RealType<T>> extends
-	AbstractFunction<IterableInterval<T>, IterableInterval<BitType>> implements
+	AbstractThreadableFunction<IterableInterval<T>, IterableInterval<BitType>> implements
 	Threshold
 {
 

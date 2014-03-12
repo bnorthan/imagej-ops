@@ -28,46 +28,104 @@
  * #L%
  */
 
-package imagej.ops.slicer;
+package imagej.ops.map;
 
-import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Function;
-import imagej.ops.Op;
-import imagej.ops.OpService;
-import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.converter.Converter;
 
-import org.scijava.Priority;
+import org.scijava.ItemIO;
 import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
 
 /**
+ * Abstract implementation of a {@link Map} which virtually converts entries in
+ * I and V from A to B.
+ * 
  * @author Christian Dietz
+ * @param <A> type to be converted to <B>
+ * @param <B> result of conversion
+ * @param <I> holding <A>s
+ * @param <O> type of resulting output
  */
-@Plugin(type = Op.class, name = "slicemapper", priority = Priority.VERY_HIGH_PRIORITY)
-public class DefaultSliceMapper<I, O>
-		extends
-		AbstractThreadableFunction<RandomAccessibleInterval<I>, RandomAccessibleInterval<O>>
-		implements SliceMapper<I, O> {
+public abstract class AbstractMapView<A, B, I, O> implements Map<A, B, Function<A, B>> {
 
 	@Parameter
-	private OpService opService;
+	private I input;
 
 	@Parameter
-	private Function<I, O> func;
+	private Function<A, B> function;
 
 	@Parameter
-	private int[] axis;
+	private B type;
 
+	@Parameter(type = ItemIO.OUTPUT)
+	private O output;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public RandomAccessibleInterval<O> compute(
-			RandomAccessibleInterval<I> input,
-			RandomAccessibleInterval<O> output) {
+	public Function<A, B> getFunction() {
+		return function;
+	}
 
-		opService.run("map", new SlicingIterableInterval(opService, output,
-				axis), new SlicingIterableInterval(opService, input, axis),
-				func);
+	/**
+	 * Returns a converer based on the given {@link Function}
+	 * 
+	 * @return
+	 */
+	public Converter<A, B> getConverter() {
+		return new ConvertWithFunction<A, B>(function);
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setFunction(final Function<A, B> function) {
+		this.function = function;
+	}
+
+	/**
+	 * @return input which will be converted to a converted output
+	 */
+	public I getInput() {
+		return input;
+	}
+
+	/**
+	 * @param input which will be converted to a converted output
+	 */
+	public void setInput(final I input) {
+		this.input = input;
+	}
+
+	/**
+	 * Set the resulting output
+	 * 
+	 * @param output
+	 */
+	protected void setOutput(final O output) {
+		this.output = output;
+	}
+
+	/**
+	 * @return the resulting converted output
+	 */
+	public O getoutput() {
 		return output;
 	}
 
+	/**
+	 * @return type of resulting converted output
+	 */
+	public B getType() {
+		return type;
+	}
+
+	/**
+	 * @param type of resulting converted output
+	 */
+	public void setType(final B type) {
+		this.type = type;
+	};
 }

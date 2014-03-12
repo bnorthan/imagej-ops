@@ -50,7 +50,7 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Op.class, name = Map.NAME, priority = Priority.LOW_PRIORITY + 1)
 public class ParallelMap<A> extends
-	AbstractInplaceMap<A, IterableInterval<A>> implements Parallel
+	AbstractThreadableInplaceMap<A, IterableInterval<A>> implements Parallel
 {
 
 	@Parameter

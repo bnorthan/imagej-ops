@@ -30,7 +30,7 @@
 
 package imagej.ops.invert;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Function;
 import imagej.ops.Op;
 import imagej.ops.OpService;
@@ -46,7 +46,7 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Op.class, name = "invert")
 public class InvertII<I extends RealType<I>, O extends RealType<O>> extends
-	AbstractFunction<IterableInterval<I>, IterableInterval<O>> implements Invert
+	AbstractThreadableFunction<IterableInterval<I>, IterableInterval<O>> implements Invert
 {
 
 	@Parameter
@@ -69,7 +69,7 @@ public class InvertII<I extends RealType<I>, O extends RealType<O>> extends
 	}
 
 	private class SignedRealInvert<II extends RealType<II>, OO extends RealType<OO>>
-		extends AbstractFunction<II, OO>
+		extends AbstractThreadableFunction<II, OO>
 	{
 
 		@Override
@@ -82,7 +82,7 @@ public class InvertII<I extends RealType<I>, O extends RealType<O>> extends
 	}
 
 	private class UnsignedRealInvert<II extends RealType<II>, OO extends RealType<OO>>
-		extends AbstractFunction<II, OO>
+		extends AbstractThreadableFunction<II, OO>
 	{
 
 		private final double max;

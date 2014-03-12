@@ -75,11 +75,12 @@ public class DefaultProjectorP<T, V> extends
 		opService.run(ChunkExecutor.class, new CursorBasedChunkExecutable() {
 
 			@Override
-			public void execute(int startIndex, final int stepSize, final int numSteps)
+			public void
+				execute(final int startIndex, final int stepSize, final int numSteps)
 			{
 				final RandomAccess<T> access = input.randomAccess();
 				final Cursor<V> cursor = output.localizingCursor();
-				
+
 				setToStart(cursor, startIndex);
 
 				int ctr = 0;
@@ -93,7 +94,7 @@ public class DefaultProjectorP<T, V> extends
 
 					method.compute(new DimensionIterable(input.dimension(dim), access),
 						cursor.get());
-					
+
 					cursor.jumpFwd(stepSize);
 					ctr++;
 				}

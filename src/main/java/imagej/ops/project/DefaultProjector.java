@@ -30,7 +30,7 @@
 
 package imagej.ops.project;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Contingent;
 import imagej.ops.Function;
 import imagej.ops.Op;
@@ -48,7 +48,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Projector.NAME, priority = Priority.LOW_PRIORITY)
 public class DefaultProjector<T, V> extends
-	AbstractFunction<RandomAccessibleInterval<T>, IterableInterval<V>> implements
+	AbstractThreadableFunction<RandomAccessibleInterval<T>, IterableInterval<V>> implements
 	Contingent, Projector
 {
 

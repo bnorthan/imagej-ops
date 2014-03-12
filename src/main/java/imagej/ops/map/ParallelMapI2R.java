@@ -52,8 +52,9 @@ import org.scijava.plugin.Plugin;
  * @param <B> mapped from <A>
  */
 @Plugin(type = Op.class, name = Map.NAME, priority = Priority.LOW_PRIORITY + 2)
-public class ParallelMapI2R<A, B> extends
-	AbstractFunctionMap<A, B, IterableInterval<A>, RandomAccessibleInterval<B>>
+public class ParallelMapI2R<A, B>
+	extends
+	AbstractThreadableFunctionMap<A, B, IterableInterval<A>, RandomAccessibleInterval<B>>
 	implements Parallel
 {
 

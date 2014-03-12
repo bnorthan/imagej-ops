@@ -30,7 +30,7 @@
 
 package imagej.ops.join;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.InplaceFunction;
 import imagej.ops.Op;
 
@@ -45,7 +45,7 @@ import org.scijava.plugin.Plugin;
  * @author Christian Dietz
  */
 @Plugin(type = Op.class, name = "join")
-public class JoinInplace<A> extends AbstractFunction<A, A> {
+public class JoinInplace<A> extends AbstractThreadableFunction<A, A> {
 
 	// list of functions to be joined
 	private List<InplaceFunction<A>> functions;

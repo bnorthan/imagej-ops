@@ -39,7 +39,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Map.NAME)
 public class MapII2View<A, B extends Type<B>> extends
-	MapView<A, B, IterableInterval<A>, IterableInterval<B>>
+	AbstractMapView<A, B, IterableInterval<A>, IterableInterval<B>>
 {
 
 	@Override

@@ -31,7 +31,7 @@
 package imagej.ops.slice;
 
 import static org.junit.Assert.assertEquals;
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.AbstractOpTest;
 import imagej.ops.OpService;
 import imagej.ops.slicer.SliceMapper;
@@ -92,7 +92,7 @@ public class SlicingIterableIntervalTest extends AbstractOpTest {
 	}
 
 	class DummyOp extends
-			AbstractFunction<Iterable<ByteType>, Iterable<ByteType>> {
+			AbstractThreadableFunction<Iterable<ByteType>, Iterable<ByteType>> {
 
 		@Override
 		public Iterable<ByteType> compute(final Iterable<ByteType> input,

@@ -30,7 +30,7 @@
 
 package imagej.ops.misc;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 
 import java.util.Iterator;
@@ -41,7 +41,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = Size.NAME, priority = Priority.LAST_PRIORITY)
-public class SizeIterable extends AbstractFunction<Iterable<?>, LongType>
+public class SizeIterable extends AbstractThreadableFunction<Iterable<?>, LongType>
 	implements Size<Iterable<?>>
 {
 

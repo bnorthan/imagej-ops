@@ -30,7 +30,7 @@
 
 package imagej.ops.statistics;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 
 import java.util.Iterator;
@@ -42,7 +42,7 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Op.class, name = "max", priority = Priority.LOW_PRIORITY)
 public class MaxRealType<T extends RealType<T>> extends
-	AbstractFunction<Iterable<T>, T> implements Max<T, T>
+	AbstractThreadableFunction<Iterable<T>, T> implements Max<T, T>
 {
 
 	@Override

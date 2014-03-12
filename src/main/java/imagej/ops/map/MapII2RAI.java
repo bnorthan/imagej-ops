@@ -50,8 +50,9 @@ import org.scijava.plugin.Plugin;
  * @param <B> mapped from <A>
  */
 @Plugin(type = Op.class, name = Map.NAME, priority = Priority.LOW_PRIORITY)
-public class MapII2RAI<A, B> extends
-	AbstractFunctionMap<A, B, IterableInterval<A>, RandomAccessibleInterval<B>>
+public class MapII2RAI<A, B>
+	extends
+	AbstractFunctionMap<A, B, IterableInterval<A>, RandomAccessibleInterval<B>, Function<A, B>>
 {
 
 	@Override

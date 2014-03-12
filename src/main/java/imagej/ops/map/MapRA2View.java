@@ -41,13 +41,12 @@ import org.scijava.plugin.Plugin;
  * Maps values of a {@link RandomAccessible} in View.
  * 
  * @author Christian Dietz
- * 
  * @param <A>
  * @param <B>
  */
 @Plugin(type = Op.class, name = Map.NAME)
 public class MapRA2View<A, B extends Type<B>> extends
-	MapView<A, B, RandomAccessible<A>, RandomAccessible<B>>
+	AbstractMapView<A, B, RandomAccessible<A>, RandomAccessible<B>>
 {
 
 	@Override

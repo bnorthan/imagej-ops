@@ -30,7 +30,7 @@
 
 package imagej.ops.normalize;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Op;
 import imagej.ops.OpService;
 
@@ -46,7 +46,7 @@ import org.scijava.plugin.Plugin;
 @Plugin(type = Op.class, name = Normalize.NAME, attrs = { @Attr(
 	name = "aliases", value = Normalize.ALIASES) })
 public class NormalizeII<T extends RealType<T>> extends
-	AbstractFunction<IterableInterval<T>, IterableInterval<T>> implements
+	AbstractThreadableFunction<IterableInterval<T>, IterableInterval<T>> implements
 	Normalize
 {
 

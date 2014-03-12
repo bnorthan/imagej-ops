@@ -32,7 +32,7 @@ package imagej.ops.map;
 
 import imagej.ops.AbstractInplaceFunction;
 import imagej.ops.Function;
-import imagej.ops.InplaceFunction;
+import imagej.ops.ThreadableInplaceFunction;
 
 import org.scijava.plugin.Parameter;
 
@@ -44,22 +44,22 @@ import org.scijava.plugin.Parameter;
  * @param <I> {@link Iterable} of <A>s
  */
 public abstract class AbstractInplaceMap<A, I extends Iterable<A>> extends
-	AbstractInplaceFunction<I> implements Map<A, A, InplaceFunction<A>>
+	AbstractInplaceFunction<I> implements Map<A, A, ThreadableInplaceFunction<A>>
 {
 
 	/**
 	 * {@link Function} to be used for mapping
 	 */
 	@Parameter
-	protected InplaceFunction<A> func;
+	protected ThreadableInplaceFunction<A> func;
 
 	@Override
-	public InplaceFunction<A> getFunction() {
+	public ThreadableInplaceFunction<A> getFunction() {
 		return func;
 	}
 
 	@Override
-	public void setFunction(final InplaceFunction<A> func) {
+	public void setFunction(final ThreadableInplaceFunction<A> func) {
 		this.func = func;
 	}
 

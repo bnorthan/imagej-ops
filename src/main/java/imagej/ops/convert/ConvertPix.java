@@ -30,7 +30,7 @@
 
 package imagej.ops.convert;
 
-import imagej.ops.AbstractFunction;
+import imagej.ops.AbstractThreadableFunction;
 import imagej.ops.Contingent;
 import net.imglib2.IterableInterval;
 import net.imglib2.type.numeric.RealType;
@@ -39,7 +39,7 @@ import net.imglib2.type.numeric.RealType;
  * @author Martin Horn
  */
 public abstract class ConvertPix<I extends RealType<I>, O extends RealType<O>>
-	extends AbstractFunction<I, O> implements Convert<I, O>, Contingent
+	extends AbstractThreadableFunction<I, O> implements Convert<I, O>, Contingent
 {
 
 	/**
