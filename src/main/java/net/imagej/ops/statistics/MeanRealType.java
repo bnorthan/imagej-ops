@@ -43,7 +43,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /**
- * TODO
+ * Computes the mean of values for the input {@link Iterable}.
  * 
  * @author Christian Dietz
  */
@@ -52,7 +52,7 @@ public class MeanRealType<I extends RealType<I>, O extends RealType<O>> extends
 		AbstractFunction<Iterable<I>, O> implements Mean<Iterable<I>, O> {
 
 	@Parameter(required = false)
-	private Sum<Iterable<I>, DoubleType> sumFunc;
+	private Sum<Iterable<I>, O> sumFunc;
 
 	@Parameter(required = false)
 	private Size<Iterable<I>> sizeFunc;
@@ -64,18 +64,30 @@ public class MeanRealType<I extends RealType<I>, O extends RealType<O>> extends
 	public O compute(final Iterable<I> input, final O output) {
 
 		if (sumFunc == null) {
-			sumFunc = (Sum<Iterable<I>, DoubleType>) ops.op(Sum.class, output,
-					input);
+			sumFunc = (Sum<Iterable<I>, O>) ops.op(Sum.class, output, input);
 		}
 		if (sizeFunc == null) {
 			sizeFunc = (Size<Iterable<I>>) ops.op(Size.class, output, input);
 		}
 
+		final O result;
+		if (output == null) {
+			// HACK: Need to cast through Object to satisfy javac.
+			final Object o = new DoubleType();
+			@SuppressWarnings("unchecked")
+			final O newOutput = (O) o;
+			result = newOutput;
+		}
+		else result = output;
+
 		final LongType size = sizeFunc.compute(input, new LongType());
-		final DoubleType sum = sumFunc.compute(input, new DoubleType());
+		final O sum = sumFunc.compute(input, result.copy());
 
-		output.setReal(size.get() / sum.get());
+		// TODO: Better way to go LongType -> O without going through double?
+		result.setReal(size.getRealDouble());
 
-		return output;
+		result.div(sum);
+
+		return result;
 	}
 }
