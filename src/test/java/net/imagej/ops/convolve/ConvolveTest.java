@@ -111,17 +111,17 @@ public class ConvolveTest extends AbstractOpTest {
     	assertEquals(inSum, outSum);
     }
     
-    // utility to place a small sphere at the center of the image
-  	private void placeSphereInCenter(Img<ShortType> img) {
-  	
-  		final Point center = new Point(img.numDimensions());
-  	
-  		for (int d=0;d<img.numDimensions();d++) center.setPosition(img.dimension(d)/2, d);
-  	
-  		HyperSphere<ShortType> hyperSphere = new HyperSphere<ShortType>(img, center, 2);
+		// utility to place a small sphere at the center of the image
+		private void placeSphereInCenter(Img<ShortType> img) {
 		
-  		for (final ShortType value:hyperSphere) {
-  			value.setReal(1);
-  		}
-    }
+			final Point center = new Point(img.numDimensions());
+		
+			for (int d=0;d<img.numDimensions();d++) center.setPosition(img.dimension(d)/2, d);
+		
+			HyperSphere<ShortType> hyperSphere = new HyperSphere<ShortType>(img, center, 2);
+		
+			for (final ShortType value:hyperSphere) {
+				value.setReal(1);
+			}
+		}
 }
