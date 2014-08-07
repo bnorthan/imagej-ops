@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 import net.imagej.ops.AbstractOpTest;
 import net.imagej.ops.Op;
 import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.array.ArrayImgFactory; 
 import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.ShortType;
 import net.imglib2.Point;
