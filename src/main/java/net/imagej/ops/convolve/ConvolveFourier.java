@@ -73,10 +73,8 @@ public class ConvolveFourier<I extends RealType<I>, K extends RealType<K>, O ext
 
 		if (last != input) {
 			last = input;
-			fc =
-				FFTConvolution.create(last, output, kernel, kernel, output,
-					new ArrayImgFactory<ComplexFloatType>());
-			fc.setKernel(kernel);
+			fc = FFTConvolution.create(last, kernel,output,new ArrayImgFactory<ComplexFloatType>());
+				fc.setKernel(kernel);
 			fc.setKeepImgFFT(true);
 		}
 		else {
