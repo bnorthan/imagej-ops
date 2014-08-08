@@ -117,8 +117,32 @@ public class Otsu<T extends RealType<T>> extends GlobalThresholdMethod<T> {
 		// intensity >=
 		// k
 		// (the algorithm was developed for I-> 1 if I <= k.)
-
-		threshold.setReal(kStar);
+		
+		// at this point the threshold is expressed as a bin number.  Convert bin number to corresponding
+		// gray level
+		
+		// get the min gray value
+		T min=threshold.createVariable();
+		hist.getLowerBound(0, min);
+		double dmin=min.getRealDouble();
+		
+		// get the max gray value
+		T max=threshold.createVariable();
+		hist.getLowerBound(0, max);
+		double dmax=min.getRealDouble();
+		
+		// get the second gray value (minp1 means min plus 1)
+		T minp1=threshold.createVariable();
+		hist.getLowerBound(1, minp1);
+		double dminp1=minp1.getRealDouble();
+		
+		// calculate bin width from min and minp1 
+		double dbinwidth=dminp1-dmin;
+		
+		// calculate threshold as a gray level
+		double dthreshold=dmin+kStar*dbinwidth;
+		
+		threshold.setReal(dthreshold);
 
 	}
 
