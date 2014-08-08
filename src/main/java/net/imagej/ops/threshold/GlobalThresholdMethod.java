@@ -33,6 +33,8 @@ package net.imagej.ops.threshold;
 import net.imagej.ops.Op;
 import net.imagej.ops.OpService;
 import net.imagej.ops.histogram.Histogram;
+import net.imagej.ops.histogram.HistogramCreate;
+
 import net.imglib2.IterableInterval;
 import net.imglib2.histogram.Histogram1d;
 import net.imglib2.type.numeric.RealType;
@@ -58,7 +60,7 @@ public abstract class GlobalThresholdMethod<T extends RealType<T>> implements Op
 	@Override
 	public void run() {
 		final Histogram1d<T> hist =
-			(Histogram1d<T>) ops.run(Histogram.class, img, null);
+			(Histogram1d<T>) ops.run(Histogram.NAME, img);
 
 		threshold = img.firstElement().createVariable();
 
