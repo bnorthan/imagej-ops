@@ -41,8 +41,7 @@ public class Otsu<T extends RealType<T>> extends GlobalThresholdMethod<T> {
 
 	@Override
 	protected final void
-		getThreshold(final Histogram1d<T> hist, final T threshold)
-	{
+		getThreshold(final Histogram1d<T> hist, final T threshold) {
 		final long[] data = hist.toLongArray();
 		final int maxValue = (int) hist.getBinCount() - 1;
 
@@ -118,7 +117,11 @@ public class Otsu<T extends RealType<T>> extends GlobalThresholdMethod<T> {
 		// k
 		// (the algorithm was developed for I-> 1 if I <= k.)
 
-		threshold.setReal(kStar);
+		// at this point the threshold is expressed as a bin number. Convert bin
+		// number to corresponding
+		// gray level
+
+		hist.getCenterValue(kStar, threshold);	
 
 	}
 

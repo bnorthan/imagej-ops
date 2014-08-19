@@ -46,8 +46,7 @@ import org.scijava.plugin.Plugin;
 @Plugin(type = Op.class, name = Threshold.NAME)
 public class GlobalThreshold<T extends RealType<T>> extends
 	AbstractFunction<IterableInterval<T>, IterableInterval<BitType>> implements
-	Threshold
-{
+	Threshold {
 
 	@Parameter
 	private GlobalThresholdMethod<T> method;
@@ -58,15 +57,14 @@ public class GlobalThreshold<T extends RealType<T>> extends
 	@SuppressWarnings("unchecked")
 	@Override
 	public IterableInterval<BitType> compute(final IterableInterval<T> input,
-		final IterableInterval<BitType> output)
-	{
+		final IterableInterval<BitType> output) {
 		final T threshold = (T) ops.run(method, input);
 
 		Op thresholdOp =
 			ops
 				.op(PixThreshold.class, new BitType(), input.firstElement(), threshold);
 
-		ops.run("map", output, input, threshold);
+		ops.run("map", output, input, thresholdOp);
 		return output;
 	}
 
