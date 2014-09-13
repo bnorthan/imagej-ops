@@ -64,7 +64,7 @@ public class ConvolveTest extends AbstractOpTest {
 		Op op = ops.op("convolve", out, in, kernel);
 		assertSame(ConvolveNaive.class, op.getClass());
 
-		// testing for a 'bigger' kernel 
+		// testing for a 'bigger' kernel
 		kernel =
 			new ArrayImgFactory<ByteType>().create(new int[] { 10, 10 },
 				new ByteType());
