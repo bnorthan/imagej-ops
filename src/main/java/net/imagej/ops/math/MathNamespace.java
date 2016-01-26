@@ -2523,6 +2523,18 @@ public class MathNamespace extends AbstractNamespace {
 	public Object zero(final Object... args) {
 		return ops().run(net.imagej.ops.Ops.Math.Zero.class, args);
 	}
+	
+	@OpMethod(op = net.imagej.ops.math.multiply.ComplexConjugateMultiply.class)
+	public <I extends RealType<I>, O extends RealType<O>> IterableInterval<O>
+		complexConjugateMultiply(final IterableInterval<O> out,
+			final IterableInterval<I> in1, final IterableInterval<I> in2)
+	{
+		@SuppressWarnings("unchecked")
+		final IterableInterval<O> result = (IterableInterval<O>) ops().run(
+			net.imagej.ops.math.multiply.ComplexConjugateMultiply.class, out, in1,
+			in2);
+		return result;
+	}
 
 	// -- Named methods --
 
