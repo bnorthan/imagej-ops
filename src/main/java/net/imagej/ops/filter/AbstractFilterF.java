@@ -34,6 +34,7 @@ import net.imagej.ops.special.function.AbstractBinaryFunctionOp;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.outofbounds.OutOfBoundsFactory;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -47,10 +48,10 @@ import org.scijava.plugin.Parameter;
  * 
  * @author Brian Northan
  * @param <I>
- * @param <O>
+ * @param <O>DefaultCreateImg
  * @param <K>
  */
-public abstract class AbstractFilterF<I extends RealType<I>, O extends RealType<O>, K extends RealType<K>>
+public abstract class AbstractFilterF<I extends RealType<I>, O extends RealType<O> & NativeType<O>, K extends RealType<K>>
 	extends
 	AbstractBinaryFunctionOp<RandomAccessibleInterval<I>, RandomAccessibleInterval<K>, RandomAccessibleInterval<O>>
 {
@@ -114,7 +115,7 @@ public abstract class AbstractFilterF<I extends RealType<I>, O extends RealType<
 		}
 
 		if (outFactory == null) {
-			outFactory = (ImgFactory<O>) (ops().create().imgFactory(input, outType));
+			outFactory = (ImgFactory<O>) (ops().create().imgFactory(input));
 		}
 
 		return ops().create().img(input, outType.createVariable(), outFactory);

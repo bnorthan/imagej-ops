@@ -33,11 +33,14 @@ package net.imagej.ops.deconvolve;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.imagej.ops.Ops;
+
 import net.imagej.ops.special.computer.AbstractUnaryComputerOp;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.multithreading.SimpleMultiThreading;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.Type;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
@@ -60,16 +63,16 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Ops.Deconvolve.RichardsonLucyUpdate.class,
 	priority = Priority.HIGH_PRIORITY)
-public class RichardsonLucyTVUpdate<T extends RealType<T>, I extends RandomAccessibleInterval<T>>
+public class RichardsonLucyTVUpdate<T extends RealType<T> & NativeType<T>, I extends RandomAccessibleInterval<T>>
 	extends AbstractUnaryComputerOp<I, I> implements
 	Ops.Deconvolve.RichardsonLucyUpdate
 {
 
 	@Parameter
-	float regularizationFactor;
+	private float regularizationFactor;
 
 	@Parameter(required = false)
-	RandomAccessibleInterval<T> variation;
+	private RandomAccessibleInterval<T> variation;
 
 	/**
 	 * performs update step of the Richardson Lucy with Total Variation Algorithm
@@ -78,11 +81,13 @@ public class RichardsonLucyTVUpdate<T extends RealType<T>, I extends RandomAcces
 	public void compute1(I correction, I estimate) {
 
 		if (variation == null) {
-			variation = ops().create().img(correction, Util.getTypeFromInterval(
-				correction));
+			Type<T> type=Util.getTypeFromInterval(
+				correction);
+			
+			variation = ops().create().img(correction, type.createVariable());
 		}
 
-		div_unit_grad_fast_thread(estimate);
+		divUnitGradFastThread(estimate);
 
 		final Cursor<T> cursorCorrection = Views.iterable(correction).cursor();
 
@@ -126,7 +131,7 @@ public class RichardsonLucyTVUpdate<T extends RealType<T>, I extends RandomAcces
 	 * Efficient multithreaded version of div_unit_grad adapted from IOCBIOS,
 	 * Pearu Peterson https://code.google.com/p/iocbio/
 	 */
-	void div_unit_grad_fast_thread(RandomAccessibleInterval<T> estimate) {
+	void divUnitGradFastThread(RandomAccessibleInterval<T> estimate) {
 		final int Nx, Ny, Nz;
 
 		Nx = (int) estimate.dimension(0);

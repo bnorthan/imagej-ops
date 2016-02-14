@@ -27,19 +27,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package net.imagej.ops.copy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
 
 import net.imagej.ops.AbstractOpTest;
+import net.imagej.ops.Ops;
+import net.imagej.ops.special.hybrid.Hybrids;
+import net.imagej.ops.special.hybrid.UnaryHybridCF;
 import net.imglib2.Cursor;
+import net.imglib2.FinalDimensions;
+import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.planar.PlanarImg;
+import net.imglib2.img.planar.PlanarImgFactory;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.view.IntervalView;
+import net.imglib2.view.Views;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,15 +59,26 @@ import org.junit.Test;
  * Test {@link CopyRAI}.
  * 
  * @author Tim-Oliver Buchholz, University of Konstanz
- *
  */
 public class CopyRAITest extends AbstractOpTest {
+
 	private Img<UnsignedByteType> input;
+
+	Img<UnsignedByteType> input2;
+	Img<UnsignedByteType> inputPlanar;
+	IntervalView<UnsignedByteType> view;
+	IntervalView<UnsignedByteType> viewPlanar;
+	
+
+	int[] size1 = new int[] { 64, 64, 64 };
+	int[] size2 = new int[] { 32, 32, 32 };
+
+	double delta = 0.0000001;
 
 	@Before
 	public void createData() {
 		input = new ArrayImgFactory<UnsignedByteType>().create(new int[] { 120,
-				100 }, new UnsignedByteType());
+			100 }, new UnsignedByteType());
 
 		final Random r = new Random(System.currentTimeMillis());
 
@@ -65,13 +87,39 @@ public class CopyRAITest extends AbstractOpTest {
 		while (inc.hasNext()) {
 			inc.next().setReal(r.nextDouble() * 255);
 		}
+
+		// create
+		long[] start = new long[] { 16, 16, 16 };
+		long[] end = new long[] { 47, 47, 47 };
+
+		// create an input with a small sphere at the center
+		input2 = ops.create().img(new FinalDimensions(size1),
+			new UnsignedByteType());
+		
+		inputPlanar = new PlanarImgFactory<UnsignedByteType>().create(size1, new UnsignedByteType());
+
+		view = Views.interval(input2, new FinalInterval(start, end));
+		viewPlanar = Views.interval(inputPlanar, new FinalInterval(start, end));
+
+		Cursor<UnsignedByteType> cursor = view.cursor();
+		Cursor<UnsignedByteType> cursorPlanar = viewPlanar.cursor();
+
+		// set every pixel in the view to 100
+		while (cursor.hasNext()) {
+			cursor.fwd();
+			cursorPlanar.fwd();
+			cursor.get().setReal(100.0);
+			cursorPlanar.get().setReal(100.0);
+			
+		}
 	}
 
 	@Test
 	public void copyRAINoOutputTest() {
 		@SuppressWarnings("unchecked")
-		final RandomAccessibleInterval<UnsignedByteType> output = (RandomAccessibleInterval<UnsignedByteType>) ops
-				.run(CopyRAI.class, input);
+		final RandomAccessibleInterval<UnsignedByteType> output =
+			(RandomAccessibleInterval<UnsignedByteType>) ops.run(CopyRAI.class,
+				input);
 
 		final Cursor<UnsignedByteType> inc = input.localizingCursor();
 		final RandomAccess<UnsignedByteType> outRA = output.randomAccess();
@@ -85,8 +133,8 @@ public class CopyRAITest extends AbstractOpTest {
 
 	@Test
 	public void copyRAIWithOutputTest() {
-		final Img<UnsignedByteType> output = input.factory().create(input,
-				input.firstElement());
+		final Img<UnsignedByteType> output = input.factory().create(input, input
+			.firstElement());
 
 		ops.run(CopyRAI.class, output, input);
 
@@ -96,5 +144,46 @@ public class CopyRAITest extends AbstractOpTest {
 		while (inc.hasNext()) {
 			assertEquals(inc.next().get(), outc.next().get());
 		}
+	}
+
+	@Test
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void copyRAIDifferentSizeTest1() {
+
+		UnaryHybridCF<IntervalView<UnsignedByteType>, RandomAccessibleInterval<UnsignedByteType>> copy =
+			(UnaryHybridCF) Hybrids.unaryCF(ops, Ops.Copy.RAI.class,
+				RandomAccessibleInterval.class, IntervalView.class);
+
+		Img<UnsignedByteType> out = ops.create().img(new FinalDimensions(size2),
+			new UnsignedByteType());
+
+		assertNotNull(copy);
+
+		copy.compute1(view, out);
+		assertEquals(ops.stats().mean(out).getRealDouble(), 100.0, delta);
+
+	}
+
+	@Test
+	public void copyRAIDifferentSizeTest2() {
+
+		assertEquals(ops.stats().mean(input2).getRealDouble(), 12.5, delta);
+		assertEquals(ops.stats().mean(inputPlanar).getRealDouble(), 12.5, delta);
+		assertEquals(ops.stats().mean(view).getRealDouble(), 100, delta);
+		assertEquals(ops.stats().mean(viewPlanar).getRealDouble(), 100, delta);
+
+		Img<UnsignedByteType> out = ops.create().img(new FinalDimensions(size2),
+			new UnsignedByteType());
+
+		// copy view to output and assert that is equal to the mean of the view
+		ops.copy().rai(out, view);
+		assertEquals(ops.stats().mean(out).getRealDouble(), 100.0, delta);
+		
+		Img<UnsignedByteType> outFromPlanar = ops.create().img(new FinalDimensions(size2),
+			new UnsignedByteType());
+		
+		ops.copy().rai(outFromPlanar, viewPlanar);
+		assertEquals(ops.stats().mean(outFromPlanar).getRealDouble(), 100.0, delta);
+		
 	}
 }

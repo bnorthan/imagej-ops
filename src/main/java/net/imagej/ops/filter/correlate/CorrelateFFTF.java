@@ -39,6 +39,7 @@ import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory.Boundary;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.ComplexType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.util.Intervals;
@@ -57,7 +58,7 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Ops.Filter.Correlate.class,
 	priority = Priority.VERY_HIGH_PRIORITY)
-public class CorrelateFFTF<I extends RealType<I>, O extends RealType<O>, K extends RealType<K>, C extends ComplexType<C>>
+public class CorrelateFFTF<I extends RealType<I>, O extends RealType<O> & NativeType<O>, K extends RealType<K>, C extends ComplexType<C> & NativeType<C>>
 	extends AbstractFFTFilterF<I, O, K, C> implements Contingent,
 	Ops.Filter.Correlate
 {

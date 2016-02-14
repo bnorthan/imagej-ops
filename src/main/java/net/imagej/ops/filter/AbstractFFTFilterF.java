@@ -44,6 +44,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory.Boundary;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.ComplexType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.complex.ComplexFloatType;
@@ -60,7 +61,7 @@ import org.scijava.plugin.Parameter;
  * @param <K>
  * @param <C>
  */
-public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealType<O>, K extends RealType<K>, C extends ComplexType<C>>
+public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealType<O> & NativeType<O>, K extends RealType<K>, C extends ComplexType<C> & NativeType<C>>
 	extends AbstractFilterF<I, O, K>
 {
 
@@ -101,9 +102,9 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 	public void initialize() {
 		super.initialize();
 
-		// if fftType, and/or fftFactory do not exist, create them using defaults
 		if (fftType == null) {
-			fftType = (ComplexType) (new ComplexFloatType().createVariable());
+			fftType = (ComplexType<C>) ops().create().nativeType(
+				ComplexFloatType.class);
 		}
 
 		if (this.getOBFInput() == null) {
@@ -179,7 +180,8 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 			new FinalDimensions(paddedSize));
 
 		// TODO: in this case it is difficult to match the filter op in the
-		// 'initialize' as we don't know the size yet, thus we can't create memory for the FFTs
+		// 'initialize' as we don't know the size yet, thus we can't create memory
+		// for the FFTs
 		filter = createFilter(paddedInput, paddedKernel, fftImage, fftKernel,
 			output, paddedInput);
 

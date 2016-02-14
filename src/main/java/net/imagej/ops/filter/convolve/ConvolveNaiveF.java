@@ -40,6 +40,7 @@ import net.imglib2.outofbounds.OutOfBoundsConstantValueFactory;
 import net.imglib2.outofbounds.OutOfBoundsFactory;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory.Boundary;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.util.Intervals;
 import net.imglib2.util.Util;
@@ -52,11 +53,11 @@ import org.scijava.plugin.Plugin;
  * Convolves an image naively (no FFTs).
  */
 @Plugin(type = Ops.Filter.Convolve.class, priority = Priority.HIGH_PRIORITY)
-public class ConvolveNaiveF<I extends RealType<I>, O extends RealType<O>, K extends RealType<K>>
+public class ConvolveNaiveF<I extends RealType<I>, O extends RealType<O> & NativeType<O>, K extends RealType<K>>
 	extends AbstractFilterF<I, O, K> implements Ops.Filter.Convolve, Contingent
 {
 
-	UnaryComputerOp<RandomAccessibleInterval<I>, RandomAccessibleInterval<O>> convolver;
+	private UnaryComputerOp<RandomAccessibleInterval<I>, RandomAccessibleInterval<O>> convolver;
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })

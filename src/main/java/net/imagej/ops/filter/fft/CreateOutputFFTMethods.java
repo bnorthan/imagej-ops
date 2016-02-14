@@ -31,7 +31,7 @@
 package net.imagej.ops.filter.fft;
 
 import net.imagej.ops.Ops;
-import net.imagej.ops.create.img.DefaultCreateImg;
+import net.imagej.ops.create.img.CreateImgFromDimsAndType;
 import net.imagej.ops.special.function.AbstractBinaryFunctionOp;
 import net.imglib2.Dimensions;
 import net.imglib2.img.Img;
@@ -65,7 +65,7 @@ public class CreateOutputFFTMethods<T> extends
 		Dimensions paddedFFTMethodsFFTDimensions = FFTMethodsUtility
 			.getFFTDimensionsRealToComplex(fast, paddedDimensions);
 
-		return (Img<T>) ops().run(DefaultCreateImg.class,
+		return (Img<T>) ops().run(CreateImgFromDimsAndType.class,
 			paddedFFTMethodsFFTDimensions, outType, fac);
 	}
 

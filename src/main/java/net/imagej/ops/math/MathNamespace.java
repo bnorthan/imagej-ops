@@ -894,11 +894,11 @@ public class MathNamespace extends AbstractNamespace {
 		return result;
 	}
 
-	@OpMethod(op = net.imagej.ops.math.IIToIIOutputII.Divide.class)
-	public <T extends NumericType<T>> IterableInterval<T> divide(
-		final IterableInterval<T> out, final IterableInterval<T> in1,
-		final IterableInterval<T> in2)
-	{
+	
+	@OpMethod(ops = { net.imagej.ops.math.IIToIIOutputII.Divide.class,
+		net.imagej.ops.math.divide.DivideHandleZero.class})
+	public <T extends NumericType<T>> IterableInterval<T> divide(final IterableInterval<T> out,
+			final IterableInterval<T> in1, final IterableInterval<T> in2) {
 		@SuppressWarnings("unchecked")
 		final IterableInterval<T> result = (IterableInterval<T>) ops().run(
 			net.imagej.ops.Ops.Math.Divide.class, out, in1, in2);
