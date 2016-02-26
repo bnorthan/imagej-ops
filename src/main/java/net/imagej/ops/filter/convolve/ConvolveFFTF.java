@@ -81,7 +81,7 @@ public class ConvolveFFTF<I extends RealType<I>, O extends RealType<O> & NativeT
 	@Override
 	public
 		BinaryComputerOp<RandomAccessibleInterval<I>, RandomAccessibleInterval<K>, RandomAccessibleInterval<O>>
-		createFilter(RandomAccessibleInterval<I> raiExtendedInput,
+		createFilterComputer(RandomAccessibleInterval<I> raiExtendedInput,
 			RandomAccessibleInterval<K> raiExtendedKernel,
 			RandomAccessibleInterval<C> fftImg, RandomAccessibleInterval<C> fftKernel,
 			RandomAccessibleInterval<O> output, Interval imgConvolutionInterval)

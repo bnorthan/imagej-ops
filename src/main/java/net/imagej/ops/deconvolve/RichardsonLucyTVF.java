@@ -140,7 +140,7 @@ public class RichardsonLucyTVF<I extends RealType<I>, O extends RealType<O> & Na
 	@SuppressWarnings("unchecked")
 	public
 		BinaryComputerOp<RandomAccessibleInterval<I>, RandomAccessibleInterval<K>, RandomAccessibleInterval<O>>
-		createFilter(final RandomAccessibleInterval<I> raiExtendedInput,
+		createFilterComputer(final RandomAccessibleInterval<I> raiExtendedInput,
 			final RandomAccessibleInterval<K> raiExtendedKernel,
 			final RandomAccessibleInterval<C> fftImg,
 			final RandomAccessibleInterval<C> fftKernel,
