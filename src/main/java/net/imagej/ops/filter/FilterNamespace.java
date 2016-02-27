@@ -40,7 +40,6 @@ import net.imagej.ops.filter.gauss.DefaultGaussRAI;
 import net.imagej.ops.filter.gauss.GaussRAISingleSigma;
 import net.imagej.ops.special.computer.BinaryComputerOp;
 import net.imagej.ops.special.computer.UnaryComputerOp;
-import net.imagej.ops.special.function.BinaryFunctionOp;
 import net.imagej.ops.special.function.UnaryFunctionOp;
 import net.imglib2.Dimensions;
 import net.imglib2.Interval;
@@ -49,7 +48,6 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.neighborhood.Shape;
 import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
 import net.imglib2.outofbounds.OutOfBoundsFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.Type;
@@ -226,23 +224,6 @@ public class FilterNamespace extends AbstractNamespace {
 	}
 
 	/** Executes the "convolve" operation on the given arguments. */
-	@OpMethod(ops = { net.imagej.ops.filter.convolve.ConvolveFFTF.class,
-		net.imagej.ops.filter.convolve.ConvolveNaiveF.class })
-	public <I extends RealType<I>, O extends RealType<O>, K extends RealType<K>>
-		RandomAccessibleInterval<O> convolve(final RandomAccessibleInterval<I> in,
-			final RandomAccessibleInterval<K> kernel, final long[] borderSize,
-			final OutOfBoundsFactory<I, RandomAccessibleInterval<I>> obfInput,
-			final OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel,
-			final Type<O> outType, final ImgFactory<O> outFactory)
-	{
-		@SuppressWarnings("unchecked")
-		final RandomAccessibleInterval<O> result =
-			(RandomAccessibleInterval<O>) ops().run(Ops.Filter.Convolve.NAME, in,
-				kernel, borderSize, obfInput, obfKernel, outType, outFactory);
-		return result;
-	}
-
-	/** Executes the "convolve" operation on the given arguments. */
 	@OpMethod(op = net.imagej.ops.filter.convolve.ConvolveFFTF.class)
 	public <
 		I extends RealType<I>, O extends RealType<O>, K extends RealType<K>, C extends ComplexType<C>>
@@ -250,36 +231,16 @@ public class FilterNamespace extends AbstractNamespace {
 			final RandomAccessibleInterval<K> kernel, final long[] borderSize,
 			final OutOfBoundsFactory<I, RandomAccessibleInterval<I>> obfInput,
 			final OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel,
-			final Type<O> outType, final ImgFactory<O> outFactory,
-			final C fftType)
+			final Type<O> outType, final C fftType)
 	{
 		@SuppressWarnings("unchecked")
 		final RandomAccessibleInterval<O> result =
 			(RandomAccessibleInterval<O>) ops().run(
 				net.imagej.ops.filter.convolve.ConvolveFFTF.class, in, kernel,
-				borderSize, obfInput, obfKernel, outType, outFactory, fftType);
+				borderSize, obfInput, obfKernel, outType, fftType);
 		return result;
 	}
 
-	/** Executes the "convolve" operation on the given arguments. */
-	@OpMethod(op = net.imagej.ops.filter.convolve.ConvolveFFTF.class)
-	public <
-		I extends RealType<I>, O extends RealType<O>, K extends RealType<K>, C extends ComplexType<C>>
-		RandomAccessibleInterval<O> convolve(final RandomAccessibleInterval<I> in,
-			final RandomAccessibleInterval<K> kernel, final long[] borderSize,
-			final OutOfBoundsFactory<I, RandomAccessibleInterval<I>> obfInput,
-			final OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel,
-			final Type<O> outType, final ImgFactory<O> outFactory,
-			final C fftType, final ImgFactory<C> fftFactory)
-	{
-		@SuppressWarnings("unchecked")
-		final RandomAccessibleInterval<O> result =
-			(RandomAccessibleInterval<O>) ops().run(
-				net.imagej.ops.filter.convolve.ConvolveFFTF.class, in, kernel,
-				borderSize, obfInput, obfKernel, outType, outFactory, fftType,
-				fftFactory);
-		return result;
-	}
 
 	/** Executes the "convolve" operation on the given arguments. */
 	@OpMethod(op = net.imagej.ops.filter.convolve.ConvolveNaiveC.class)
@@ -457,56 +418,13 @@ public class FilterNamespace extends AbstractNamespace {
 			final RandomAccessibleInterval<K> kernel, final long[] borderSize,
 			final OutOfBoundsFactory<I, RandomAccessibleInterval<I>> obfInput,
 			final OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel,
-			final Type<O> outType, final ImgFactory<O> outFactory)
+			final Type<O> outType, final C fftType)
 	{
 		@SuppressWarnings("unchecked")
 		final RandomAccessibleInterval<O> result =
 			(RandomAccessibleInterval<O>) ops().run(
 				net.imagej.ops.filter.correlate.CorrelateFFTF.class, in, kernel,
-				borderSize, obfInput, obfKernel, outType, outFactory);
-		return result;
-	}
-
-	/** Executes the "correlate" operation on the given arguments. */
-	@OpMethod(op = net.imagej.ops.filter.correlate.CorrelateFFTF.class)
-	public <
-		I extends RealType<I>, O extends RealType<O>, K extends RealType<K>, C extends ComplexType<C>>
-		RandomAccessibleInterval<O> correlate(
-
-			final RandomAccessibleInterval<I> in,
-			final RandomAccessibleInterval<K> kernel, final long[] borderSize,
-			final OutOfBoundsFactory<I, RandomAccessibleInterval<I>> obfInput,
-			final OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel,
-			final Type<O> outType, final ImgFactory<O> outFactory,
-			final C fftType)
-	{
-		@SuppressWarnings("unchecked")
-		final RandomAccessibleInterval<O> result =
-			(RandomAccessibleInterval<O>) ops().run(
-				net.imagej.ops.filter.correlate.CorrelateFFTF.class, in, kernel,
-				borderSize, obfInput, obfKernel, outType, outFactory, fftType);
-		return result;
-	}
-
-	/** Executes the "correlate" operation on the given arguments. */
-	@OpMethod(op = net.imagej.ops.filter.correlate.CorrelateFFTF.class)
-	public <
-		I extends RealType<I>, O extends RealType<O>, K extends RealType<K>, C extends ComplexType<C>>
-		RandomAccessibleInterval<O> correlate(
-
-			final RandomAccessibleInterval<I> in,
-			final RandomAccessibleInterval<K> kernel, final long[] borderSize,
-			final OutOfBoundsFactory<I, RandomAccessibleInterval<I>> obfInput,
-			final OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel,
-			final Type<O> outType, final ImgFactory<O> outFactory,
-			final C fftType, final ImgFactory<C> fftFactory)
-	{
-		@SuppressWarnings("unchecked")
-		final RandomAccessibleInterval<O> result =
-			(RandomAccessibleInterval<O>) ops().run(
-				net.imagej.ops.filter.correlate.CorrelateFFTF.class, in, kernel,
-				borderSize, obfInput, obfKernel, outType, outFactory, fftType,
-				fftFactory);
+				borderSize, obfInput, obfKernel, outType, fftType);
 		return result;
 	}
 
@@ -591,17 +509,6 @@ public class FilterNamespace extends AbstractNamespace {
 		return result;
 	}
 
-	@OpMethod(op = net.imagej.ops.filter.fft.CreateOutputFFTMethods.class)
-	public <T> Img<T> createFFTOutput(final Dimensions in1, final T in2,
-		final boolean fast, final ImgFactory<T> fac)
-	{
-		@SuppressWarnings("unchecked")
-		final Img<T> result = (Img<T>) ops().run(
-			net.imagej.ops.filter.fft.CreateOutputFFTMethods.class, in1, in2, fast,
-			fac);
-		return result;
-	}
-
 	// -- fft --
 
 	/** Executes the "fft" operation on the given arguments. */
@@ -674,30 +581,13 @@ public class FilterNamespace extends AbstractNamespace {
 		RandomAccessibleInterval<C> fft(final RandomAccessibleInterval<T> in,
 			final long[] borderSize, final boolean fast,
 			final OutOfBoundsFactory<T, RandomAccessibleInterval<T>> obf,
-			ImgFactory<C> factory)
+			 Type<C> fftType)
 	{
 		@SuppressWarnings("unchecked")
 		final RandomAccessibleInterval<C> result =
 			(RandomAccessibleInterval<C>) ops().run(
 				net.imagej.ops.filter.fft.FFTMethodsOpF.class, in, borderSize, fast,
-				obf, factory);
-		return result;
-	}
-
-	/** Executes the "fft" operation on the given arguments. */
-	@OpMethod(op = net.imagej.ops.filter.fft.FFTMethodsOpF.class)
-	public <
-		T extends RealType<T>, I extends RandomAccessibleInterval<T>, C extends ComplexType<C>, O extends RandomAccessibleInterval<C>>
-		RandomAccessibleInterval<C> fft(final RandomAccessibleInterval<T> in,
-			final long[] borderSize, final boolean fast,
-			final OutOfBoundsFactory<T, RandomAccessibleInterval<T>> obf,
-			ImgFactory<C> factory, Type<C> fftType)
-	{
-		@SuppressWarnings("unchecked")
-		final RandomAccessibleInterval<C> result =
-			(RandomAccessibleInterval<C>) ops().run(
-				net.imagej.ops.filter.fft.FFTMethodsOpF.class, in, borderSize, fast,
-				obf, factory, fftType);
+				obf, fftType);
 		return result;
 	}
 
