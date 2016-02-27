@@ -77,7 +77,7 @@ public class CorrelateFFTF<I extends RealType<I>, O extends RealType<O> & Native
 	}
 
 	/**
-	 * create a correlation filter
+	 * create a correlation filter computer
 	 */
 	@Override
 	public

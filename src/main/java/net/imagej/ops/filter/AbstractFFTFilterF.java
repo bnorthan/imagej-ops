@@ -34,6 +34,7 @@ import net.imagej.ops.filter.fft.CreateOutputFFTMethods;
 import net.imagej.ops.filter.pad.PadInputFFTMethods;
 import net.imagej.ops.filter.pad.PadShiftKernelFFTMethods;
 import net.imagej.ops.special.computer.BinaryComputerOp;
+import net.imagej.ops.special.function.AbstractBinaryFunctionOp;
 import net.imagej.ops.special.function.BinaryFunctionOp;
 import net.imagej.ops.special.function.Functions;
 import net.imagej.ops.special.function.UnaryFunctionOp;
@@ -41,12 +42,16 @@ import net.imglib2.Dimensions;
 import net.imglib2.FinalDimensions;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.outofbounds.OutOfBoundsFactory;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory;
 import net.imglib2.outofbounds.OutOfBoundsMirrorFactory.Boundary;
 import net.imglib2.type.NativeType;
+import net.imglib2.type.Type;
 import net.imglib2.type.numeric.ComplexType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.complex.ComplexFloatType;
+import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Util;
 
 import org.scijava.plugin.Parameter;
 
@@ -61,8 +66,32 @@ import org.scijava.plugin.Parameter;
  * @param <C>
  */
 public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealType<O> & NativeType<O>, K extends RealType<K>, C extends ComplexType<C> & NativeType<C>>
-	extends AbstractFilterF<I, O, K>
+	extends AbstractBinaryFunctionOp<RandomAccessibleInterval<I>, RandomAccessibleInterval<K>, RandomAccessibleInterval<O>>
 {
+	/**
+	 * Border size in each dimension. If null default border size will be
+	 * calculated and added.
+	 */
+	@Parameter(required = false)
+	private long[] borderSize = null;
+
+	/**
+	 * Defines the out of bounds strategy for the extended area of the input
+	 */
+	@Parameter(required = false)
+	private OutOfBoundsFactory<I, RandomAccessibleInterval<I>> obfInput;
+
+	/**
+	 * Defines the out of bounds strategy for the extended area of the kernel
+	 */
+	@Parameter(required = false)
+	private OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel;
+
+	/**
+	 * The output type. If null a default output type will be used.
+	 */
+	@Parameter(required = false)
+	private Type<O> outType;
 
 	/**
 	 * FFT type
@@ -100,8 +129,8 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 				ComplexFloatType.class);
 		}
 
-		if (this.getOBFInput() == null) {
-			setOBFInput(new OutOfBoundsMirrorFactory<>(Boundary.SINGLE));
+		if (this.obfInput == null) {
+			obfInput=new OutOfBoundsMirrorFactory<>(Boundary.SINGLE);
 		}
 
 		/**
@@ -109,7 +138,7 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 		 */
 		padOp = (BinaryFunctionOp) Functions.binary(ops(), PadInputFFTMethods.class,
 			RandomAccessibleInterval.class, RandomAccessibleInterval.class,
-			Dimensions.class, true, getOBFInput());
+			Dimensions.class, true, obfInput);
 
 		/**
 		 * Op used to pad the kernel
@@ -124,6 +153,36 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 		createOp = (UnaryFunctionOp) Functions.unary(ops(),
 			CreateOutputFFTMethods.class, RandomAccessibleInterval.class,
 			Dimensions.class, fftType, true);
+	}
+	
+	/**
+	 * protected RandomAccessibleInterval<K> getKernel() { return kernel; } Create
+	 * the output using the outFactory and outType if they exist. If these are
+	 * null use a default factory and type
+	 */
+	@SuppressWarnings("unchecked")
+	public RandomAccessibleInterval<O> createOutput(
+		RandomAccessibleInterval<I> input, RandomAccessibleInterval<K> kernel)
+	{
+
+		if (outType == null) {
+
+			// if the input type and kernel type are the same use this type
+			if (Util.getTypeFromInterval(input).getClass() == Util
+				.getTypeFromInterval(kernel).getClass())
+			{
+				Object temp = Util.getTypeFromInterval(input).createVariable();
+				outType = (Type<O>) temp;
+
+			}
+			// otherwise default to float
+			else {
+				Object temp = new FloatType();
+				outType = (Type<O>) temp;
+			}
+		}
+
+		return ops().create().img(input, outType.createVariable());
 	}
 
 	/**
@@ -143,7 +202,7 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 
 		final long[] paddedSize = new long[numDimensions];
 
-		if (getBorderSize() == null) {
+		if (borderSize == null) {
 			// if no border size was passed in, then extend based on kernel size
 			for (int d = 0; d < numDimensions; ++d) {
 				paddedSize[d] = (int) input.dimension(d) + (int) kernel.dimension(d) -
@@ -152,11 +211,11 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 
 		}
 		else {
-			// if getBorderSize() was passed in
+			// if borderSize was passed in
 			for (int d = 0; d < numDimensions; ++d) {
 
-				paddedSize[d] = Math.max(kernel.dimension(d) + 2 * getBorderSize()[d],
-					input.dimension(d) + 2 * getBorderSize()[d]);
+				paddedSize[d] = Math.max(kernel.dimension(d) + 2 * borderSize[d],
+					input.dimension(d) + 2 * borderSize[d]);
 			}
 		}
 
@@ -201,5 +260,29 @@ public abstract class AbstractFFTFilterF<I extends RealType<I>, O extends RealTy
 			RandomAccessibleInterval<K> raiExtendedKernel,
 			RandomAccessibleInterval<C> fftImg, RandomAccessibleInterval<C> fftKernel,
 			RandomAccessibleInterval<O> output, Interval imgConvolutionInterval);
+	
+	protected long[] getBorderSize() {
+		return borderSize;
+	}
+
+	protected OutOfBoundsFactory<I, RandomAccessibleInterval<I>> getOBFInput() {
+		return obfInput;
+	}
+
+	protected void setOBFInput(
+		OutOfBoundsFactory<I, RandomAccessibleInterval<I>> objInput)
+	{
+		this.obfInput = objInput;
+	}
+
+	protected OutOfBoundsFactory<K, RandomAccessibleInterval<K>> getOBFKernel() {
+		return obfKernel;
+	}
+
+	protected void setOBFKernel(
+		OutOfBoundsFactory<K, RandomAccessibleInterval<K>> obfKernel)
+	{
+		this.obfKernel = obfKernel;
+	}
 
 }

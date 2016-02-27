@@ -76,7 +76,7 @@ public class ConvolveFFTF<I extends RealType<I>, O extends RealType<O> & NativeT
 	}
 
 	/**
-	 * create a convolve filter
+	 * create a convolve filter computer
 	 */
 	@Override
 	public
