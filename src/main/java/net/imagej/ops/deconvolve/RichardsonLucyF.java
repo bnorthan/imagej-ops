@@ -139,18 +139,17 @@ public class RichardsonLucyF<I extends RealType<I>, O extends RealType<O> & Nati
 			accelerator = ops.op(VectorAccelerator.class, output);
 		}
 
-		if (!nonCirculant) {
-			return Computers.binary(ops(), RichardsonLucyC.class, output,
+		if (nonCirculant) {
+			return Computers.binary(ops(), RichardsonLucyNonCirculantC.class, output,
 				raiExtendedInput, raiExtendedKernel, fftImg, fftKernel, true, true,
-				maxIterations, imgConvolutionInterval, accelerator,
-				null, computeEstimateOp);
+				maxIterations, imgConvolutionInterval, accelerator, in(),
+				in2(), computeEstimateOp);	
 		}
-
-		return Computers.binary(ops(), RichardsonLucyNonCirculantC.class, output,
+		
+		return Computers.binary(ops(), RichardsonLucyC.class, output,
 			raiExtendedInput, raiExtendedKernel, fftImg, fftKernel, true, true,
-			maxIterations, imgConvolutionInterval, accelerator, in(),
-			in2(), computeEstimateOp);
-
+			maxIterations, imgConvolutionInterval, accelerator,
+			null, computeEstimateOp);
 	}
 
 	public void setComputeEstimateOp(
